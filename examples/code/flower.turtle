@@ -1,0 +1,30 @@
+import 'library.svgt'
+
+def flower_petal()
+{
+  width = 10
+  length = 30
+
+  r -25
+  q length -width 0
+  a width 180
+  q -length -width 25
+}
+
+M 250 250
+
+npetals = 22
+nrings = 4
+
+for sz = 1..nrings
+  for npetals
+  {
+    r (360/npetals)
+    push
+      # stem
+      f (sz*15)
+
+      # petal
+      stomp (sz*.8) flower_petal
+    pop
+  }

@@ -1,0 +1,4 @@
+def foo()
+{
+  f should_be_undefined
+}

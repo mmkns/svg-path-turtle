@@ -1,0 +1,7 @@
+def wrapper(fn(a b))
+{
+  fn 3  # too few args for lambda
+}
+## exit 1
+## stderr
+Line 4:1: Error: Expected an expression

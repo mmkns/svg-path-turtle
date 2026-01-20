@@ -1,0 +1,63 @@
+if 1 # makes c,x,y locals instead of global
+{
+
+  # anon function with local var and capture, called w extra args
+  def wrapper2(ff(a b))
+  {
+    ff 3333 4444
+  }
+
+  c = 777
+  x = 888
+  y = 999
+
+  # this anon's closure is at pos 0
+  wrapper2 { =>(a) b = c M a b z nl } 
+
+  def additional_closure()
+  {
+    M 5555 x z nl
+  }
+
+  wrapper2 additional_closure
+
+  # because of test2 being a closure, this anon's closure is at pos 1, not 0
+  wrapper2 { =>(a) b = y M a b z nl } 
+
+}
+
+if 1 # two anon closures in one call
+{
+  def takes_two(f1(a b) c f2(d) e)
+  {
+    f = (c*2)
+    g = (e*2)
+    h = ((c+e)*2)
+
+    f1 f g
+    M c e z
+    f2 h
+    nl
+  }
+
+  takes_two
+    { =>(a b) M a b z }
+    5
+    { =>(a) M (a*2) (a*2) z }
+    7
+
+  # verification that closure stack is not broken now
+  takes_two
+    { =>(a b) M (a*3) (b*3) z }
+    6
+    { =>(a) M (a*5) (a*6) z }
+    8
+
+}
+
+## stdout
+M 3333 777 Z 
+M 5555 888 Z 
+M 3333 999 Z 
+M 10 14 Z M 5 7 Z M 48 48 Z 
+M 36 48 Z M 6 8 Z M 140 168 Z 

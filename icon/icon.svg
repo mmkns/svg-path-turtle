@@ -1,0 +1,22 @@
+<svg viewbox="0 0 250 250" height="300px" width="300px" xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="0" width="100%" height="100%" fill="#6d98f6"/>
+<path fill="none" stroke="black" stroke-width="2" stroke-linejoin="round" src="path.background"/>
+<g transform="translate(35, 190) rotate(-90) scale(3)"
+    fill="#b3d3d3"
+    style="font-family: sans-serif; font-weight: 900;">
+  <text dominant-baseline="middle" text-anchor="middle">TURTLE!</text>
+</g>
+<g transform="translate(35, 23)">
+  <g transform="translate(125, 50) rotate(15) scale(.8)">
+    <path fill="#60ff60" stroke="black" stroke-width="3" stroke-linejoin="round" src="path.turtle"/>
+    <path fill="none" stroke="black" stroke-width="11" stroke-linecap="butt" stroke-dasharray="30 7"
+	  src="path.trail"/>
+  </g>
+  <g transform="translate(95, 185) rotate(195) scale(.8)">
+    <path fill="#ff6060" stroke="black" stroke-width="3" stroke-linejoin="round" src="path.turtle"/>
+    <path fill="none" stroke="black" stroke-width="11" stroke-linecap="butt" stroke-dasharray="30 7"
+	  src="path.trail"/>
+  </g>
+</g>
+<path fill="silver" stroke="black" stroke-width="2" stroke-linejoin="round" src="path.fish" />
+</svg>

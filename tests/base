@@ -1,0 +1,24 @@
+def myfn(a b)
+{
+  M a b z nl
+}
+
+myfn +1 -2.
+myfn 3.1415 4.2e-1
+myfn 0.3 .4
+myfn 1.9e00002 -.4e-02
+
+for v = 5..1 { M v v z } nl
+
+for v = 10..-2..1 { M v v z } nl
+
+for v2 = 10..2..1 { M v2 v2 z } nl
+
+## stdout
+M 1 -2 Z 
+M 3.14 0.42 Z 
+M 0.3 0.4 Z 
+M 190 0 Z 
+M 5 5 Z M 4 4 Z M 3 3 Z M 2 2 Z M 1 1 Z 
+M 10 10 Z M 8 8 Z M 6 6 Z M 4 4 Z M 2 2 Z 
+M 10 10 Z M 8 8 Z M 6 6 Z M 4 4 Z M 2 2 Z 

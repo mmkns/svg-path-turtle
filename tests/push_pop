@@ -1,0 +1,10 @@
+# verify pop does a move, breaking the path
+M 100 100
+d 0
+push
+f 100
+pop
+m 0 100
+f 100
+## stdout
+M 100 100 L 200 100 M 100 200 L 200 200 

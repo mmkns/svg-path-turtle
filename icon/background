@@ -1,0 +1,11 @@
+import 'parts'
+
+offset = 12
+
+M -offset 23
+for 20 {
+  stamp waves
+  m offset 30
+  stamp waves
+  m -offset 30
+}

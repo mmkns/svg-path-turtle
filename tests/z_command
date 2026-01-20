@@ -1,0 +1,29 @@
+# From the spec: M/m set initial point; Z moves to that point.
+
+def checkmark() { push d 50 f 20 d -50 f 50 r 180 f 50 pop }
+def xmark() { push d 50 ha 40 50 pop push d 90 up f 50 down d -50 ha 40 50 pop }
+
+def mark(which)
+{
+  if (which == 1)
+    checkmark
+  else
+    xmark
+}
+
+M 50 50 
+r 15 f 50 r 90 f 20
+z
+
+ok1 = (turtle.x == 50 && turtle.y == 50)
+
+M 150 50 mark(ok1)
+
+M 50 150 
+d 45 f 50 r 90 f 20 z
+
+ok2 = (turtle.x == 50 && turtle.y == 150)
+
+M 150 150 mark(ok2)
+## stdout
+M 50 50 L 98.3 62.94 L 93.12 82.26 Z M 150 50 L 162.86 65.32 L 195 27.02 L 162.86 65.32 M 50 150 L 85.36 185.36 L 71.21 199.5 Z M 150 150 L 162.86 165.32 L 195 127.02 L 162.86 165.32 

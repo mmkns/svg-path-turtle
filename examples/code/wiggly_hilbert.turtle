@@ -1,0 +1,46 @@
+def hilbert(level angle step veer)
+{
+  def wiggly_edge()
+  {
+    half=(step/2)
+
+    # Determine the point we will Q to
+    push up
+      f half r veer
+      x1 = turtle.x
+      y1 = turtle.y
+      a1 = turtle.dir
+    pop
+
+    # Now do the Q, and t for the second half
+    r -veer Q x1 y1 a1 r -veer
+    t half
+    d a1
+    r -veer
+  }
+
+  if level > 0
+  {
+    l angle
+    hilbert (level - 1) -angle step -veer
+    wiggly_edge
+    r angle
+    hilbert (level - 1) angle step veer
+    wiggly_edge
+    hilbert (level - 1) angle step -veer
+    r angle
+    wiggly_edge
+    hilbert (level - 1) -angle step veer
+    l angle
+  }
+}
+
+levels = 4
+size = 480
+step = (size / (2**levels - 1))
+veer = 20
+
+M 10 (size + 10)
+
+hilbert levels 90 step veer
+

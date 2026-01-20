@@ -1,0 +1,315 @@
+#!/bin/bash
+ 
+#  MIT License
+#  
+#  Copyright (c) 2026 mmkns
+#  
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#  
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+#  
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
+ 
+
+set -u
+
+TMP_PREFIX=".run_tests"
+
+FIRSTRUN_CHECK_FILE="$TMP_PREFIX.firstrun"
+
+PROGRAM="$TMP_PREFIX.program" # turtle code extracted from test file
+
+EOUT="$TMP_PREFIX.eout" # expected stdout
+COUT="$TMP_PREFIX.cout" # actual stdout
+EERR="$TMP_PREFIX.eerr" # expected stderr
+CERR="$TMP_PREFIX.cerr" # actual stderr
+
+TMPFILES="$PROGRAM $EOUT $COUT $EERR $CERR"
+
+CMD=()
+SHOW_OUTPUT=0
+SHOW_FAILED=1
+
+#######################################################################
+# Utilities
+#######################################################################
+
+stderr()
+{
+  echo 1>&2 "$@"
+}
+
+indenter()
+{
+  sed 's/^/    /'
+}
+
+ender()
+{
+  sed 's/$/$/'
+}
+
+showdiff()
+{
+  diff <(sed 's/$/$/' $1) <(sed 's/$/$/' $2)
+}
+
+evaluate()
+{
+  diff -q $EOUT $COUT && diff -q $EERR $CERR
+}
+
+LARGENUM_REGEX=" [0-9]\{5,\}[0-9.]*" 
+
+find_large_numbers()
+{
+  grep -o "$LARGENUM_REGEX" $COUT
+}
+
+check_first_run()
+{
+  # First-run check - to avoid obliterating users's files
+
+  if [[ ! -f "$FIRSTRUN_CHECK_FILE" ]]
+  then
+    EXISTING=($(ls $TMPFILES 2>/dev/null))
+
+    if [[ ${#EXISTING[@]} != 0 ]]
+    then
+      stderr "$0: Refusing to run for the first time due to existing temp files: ${EXISTING[*]}"
+      stderr "$0: Please remove them to run the tests."
+      stderr "$0: Once fixed, running this script will delete them without warning."
+
+      exit 1
+    else
+      touch "$FIRSTRUN_CHECK_FILE"
+    fi
+  fi
+}
+
+MISSING_FILES=()
+
+check_missing_file()
+{
+    [ ! -f "$1" ] && MISSING_FILES+=("$1")
+}
+
+show_help()
+{
+    cat <<EOF
+$0 [-o] [-s] [-h] [-*] [test_filename ...]
+
+Options
+ -h|--help     - show this help
+ -o|--output   - show output of failed tests
+ -s|--silent   - no output and no list of failed tests
+ -*            - any other option is passed to svg_path_turtle
+
+With no test filename arguments, runs all tests.
+
+EOF
+}
+
+#######################################################################
+# do_test()
+#######################################################################
+
+DOTS=$(printf ".%.0s" {1..80})
+
+rmr()
+{
+  echo "$*" | tr -d '\r'
+}
+
+do_test()
+{
+  local NAME=$1
+  shift
+
+  stderr -n "$NAME..."
+
+  rm -f $TMPFILES
+  touch $TMPFILES
+
+  local WHERE=$PROGRAM
+  local TEST_OPTS=
+
+  local EXPECTED_EXIT=0
+
+  OLDIFS="$IFS"
+  IFS=''
+  while read LINE
+  do
+    # '*' wildcard allows this to work on windows, where LINE contains \r
+    case $LINE in
+      "## stdout"*)   WHERE=$EOUT                        ;;
+      "## stderr"*)   WHERE=$EERR                        ;;
+      "## exit "*)    EXPECTED_EXIT="$(rmr "${LINE:8}")" ;;
+      "## cmdline "*) TEST_OPTS="$(rmr "${LINE:11}")"    ;;
+
+      *)              echo "$LINE" >>"$WHERE"            ;;
+
+    esac
+  done
+  IFS="$OLDIFS"
+
+  cat $PROGRAM | "${CMD[@]}" $TEST_OPTS >$COUT 2>$CERR
+
+  EXIT_STATUS=$?
+
+  local NDOTS=$(( 30 - ${#NAME} ))
+
+  stderr -n "${DOTS:0:NDOTS}"
+
+  if (( EXIT_STATUS != EXPECTED_EXIT ))
+  then
+    echo "Failed (exit status)"
+    if (( SHOW_OUTPUT ))
+    then
+      echo "  Expected exit $EXPECTED_EXIT, got $EXIT_STATUS"
+      echo "  Command was: '${CMD[*]} $TEST_OPTS'"
+      echo "  ------------------------ Program:  ---------------------"
+      cat $PROGRAM | indenter
+      echo "  ------------------------ stderr    ---------------------"
+      cat $CERR | indenter
+      echo "  --------------------------------------------------------"
+    fi
+    return 1
+  elif find_large_numbers > /dev/null
+  then
+    echo "Failed (large nums)"
+    if (( SHOW_OUTPUT ))
+    then
+      echo "  Unexpectedly large numbers in output - probably a bug"
+      echo "  ------------------------ Program:  ---------------------"
+      cat $PROGRAM | indenter
+      echo "  ------------------------ stdout nums -------------------"
+      find_large_numbers | indenter
+      echo "  --------------------------------------------------------"
+    fi
+    return 1
+  elif evaluate > /dev/null
+  then
+    echo "Ok."
+    return 0
+  else
+    echo "Failed (wrong output)"
+    if (( SHOW_OUTPUT ))
+    then
+      echo "  Output did not match."
+      echo "  ------------------------ Program:  ---------------------"
+      cat $PROGRAM | indenter
+      echo "  ------------------------ stdout [diff $EOUT $COUT] -----"
+      showdiff $EOUT $COUT | indenter
+      echo "  ------------------------ stderr [diff $EERR $CERR] -----"
+      showdiff $EERR $CERR | indenter
+      echo "  --------------------------------------------------------"
+    fi
+    return 1
+  fi
+}
+
+#######################################################################
+# Main
+#######################################################################
+
+# check for some things, to see if this is the right directory
+check_missing_file svg_path_turtle
+check_missing_file library.svgt
+check_missing_file tests/too_few_args_lambda
+
+if (( ${#MISSING_FILES[@]} ))
+then
+    stderr "Some files appear to be missing: ${MISSING_FILES[*]}"
+    stderr "run_tests should be run in the main repo directory, where the tests/ subdir is"
+    exit 1
+fi
+
+check_first_run # avoid oblitering user's similar hidden files
+
+TESTS=()
+EXE=./svg_path_turtle
+CMDLINE_ARGS=()
+
+while (( $# ))
+do
+    ARG="$1"
+
+    shift
+
+    case $ARG in
+
+	-h|--help)   show_help ; exit 0            ;;
+	-o|--output) SHOW_OUTPUT=1                 ;;
+	-s|--silent) SHOW_OUTPUT=0; SHOW_FAILED=0  ;;
+	-*)          CMDLINE_ARGS+=("$ARG")        ;;    
+
+	*)
+	   [[ ! $ARG =~ ^tests/ ]] && ARG="tests/$ARG"
+
+	   if [[ $(basename "$ARG") =~ ^lib_ ]] 
+	   then
+	       stderr "File '$ARG': Test files named lib_* are not tests, and cannot be run"
+	       exit 1
+	   fi
+
+	   TESTS+=("$ARG")
+
+	   ;;
+
+    esac
+
+done
+
+CMD=("$EXE" "${CMDLINE_ARGS[@]}")
+
+if [[ ${#TESTS[@]} == 0 ]]
+then
+    TESTS=($(find tests -type f | grep -v "CVS\|README\|^tests/lib_" | sort ))
+fi
+
+# Run tests
+
+FAILED=()
+
+for TEST in "${TESTS[@]}"
+do
+  NAME="${TEST#tests/}"
+
+  if [ ! -f "$TEST" ]
+  then
+    stderr "$NAME...Does not exist!"
+    FAILED+=($NAME)
+  else
+    cat "$TEST" | do_test "$NAME"
+    (( $? )) && FAILED+=($NAME)
+  fi
+done
+
+if (( $SHOW_FAILED ))
+then
+  for F in "${FAILED[@]}"
+  do
+    echo "Failed: $F"
+  done
+fi
+
+echo "Failures: ${#FAILED[@]}"
+
+EXIT=0
+
+(( ${#FAILED[@]} )) && EXIT=1
+
+exit $EXIT

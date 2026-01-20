@@ -1,0 +1,60 @@
+def out(a b) { M a b z nl }
+
+if 1 # make everything local
+{
+  capture = 101
+
+  # a loop body that is a closure
+  for loopvar = 1..3
+  {
+    out capture loopvar
+  }
+
+  nl
+
+  # a loop body with an inner closure over the loop var
+  for loopvar = 4..6
+  {
+    def middle()
+    {
+      out 102 loopvar
+    }
+
+    middle
+  }
+
+  nl
+
+  # a loop body with an inner closure over the loop var and another inside that
+  for loopvar = 1000..1002
+  {
+    def middle()
+    {
+      def inner()
+      {
+	out 104 loopvar
+      }
+
+      out 103 loopvar
+
+      inner
+    }
+
+    middle
+  }
+}
+## stdout
+M 101 1 Z 
+M 101 2 Z 
+M 101 3 Z 
+
+M 102 4 Z 
+M 102 5 Z 
+M 102 6 Z 
+
+M 103 1000 Z 
+M 104 1000 Z 
+M 103 1001 Z 
+M 104 1001 Z 
+M 103 1002 Z 
+M 104 1002 Z 

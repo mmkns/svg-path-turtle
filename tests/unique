@@ -1,0 +1,11 @@
+start = unique
+for v = 1..5
+{
+  M v (unique - start) z nl
+}
+## stdout
+M 1 1 Z 
+M 2 2 Z 
+M 3 3 Z 
+M 4 4 Z 
+M 5 5 Z 

@@ -1,0 +1,144 @@
+def out(a b) { M a b z nl }
+
+###############################################################
+
+def complete_no_closure(a b)
+{
+  out a b
+}
+
+complete_no_closure 12 23
+
+nl
+
+if 1 # make values into locals so they must be captured
+{
+  ###############################################################
+
+      capture1 = 1
+
+      def complete_w_closure(a)
+      {
+	out a capture1
+      }
+
+      complete_w_closure 94 # call from declaration context
+
+      nl
+
+  ###############################################################
+
+      def sibling_function()
+      {
+	complete_w_closure 84 # call from a sibling function
+      }
+
+      sibling_function
+
+      nl
+
+  ###############################################################
+
+      capture2 = 2
+
+      def incomplete_closure_unknown_self_recursion(n)
+      {
+	if n
+	  # at this point, parser does not know this is a closure
+	  incomplete_closure_unknown_self_recursion (n-1)
+
+	out capture2 n
+      }
+
+      incomplete_closure_unknown_self_recursion 4
+
+      nl
+
+  ###############################################################
+
+      capture3 = 3
+
+      def incomplete_closure_known_self_recursion(n)
+      {
+	out capture3 n
+
+	if n
+	  incomplete_closure_known_self_recursion (n-1)
+      }
+
+      incomplete_closure_known_self_recursion 4
+
+      nl
+
+  ###############################################################
+
+      capture4 = 4
+
+      def incomplete_closure_unknown_outer_recursion(n)
+      {
+	def inner(n)
+	{
+	  if n
+	    # at this point, parser does not know this is a closure
+	    incomplete_closure_unknown_outer_recursion (n-1)
+	}
+
+	inner n
+
+	out capture4 n
+      }
+
+      incomplete_closure_unknown_outer_recursion 4
+
+      nl
+
+  ###############################################################
+
+      capture5 = 5
+
+      def incomplete_closure_known_outer_recursion(n)
+      {
+	out capture5 n
+
+	def inner(n)
+	{
+	  if n
+	    incomplete_closure_known_outer_recursion (n-1)
+	}
+
+	inner n
+      }
+
+      incomplete_closure_known_outer_recursion 4
+}
+
+## stdout
+M 12 23 Z 
+
+M 94 1 Z 
+
+M 84 1 Z 
+
+M 2 0 Z 
+M 2 1 Z 
+M 2 2 Z 
+M 2 3 Z 
+M 2 4 Z 
+
+M 3 4 Z 
+M 3 3 Z 
+M 3 2 Z 
+M 3 1 Z 
+M 3 0 Z 
+
+M 4 0 Z 
+M 4 1 Z 
+M 4 2 Z 
+M 4 3 Z 
+M 4 4 Z 
+
+M 5 4 Z 
+M 5 3 Z 
+M 5 2 Z 
+M 5 1 Z 
+M 5 0 Z 

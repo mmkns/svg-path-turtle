@@ -1,0 +1,13 @@
+/build
+/svg_path_turtle
+
+# symlink to help run_tests
+/library.svgt
+
+# temp files for run_tests
+/.run_tests.firstrun
+/.run_tests.cerr
+/.run_tests.cout
+/.run_tests.eerr
+/.run_tests.eout
+/.run_tests.program

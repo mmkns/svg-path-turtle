@@ -1,0 +1,155 @@
+import '../library.svgt'
+
+###################################################
+# Turtle 
+###################################################
+
+shell_side = 30
+
+def shell()
+{
+  r (45/2)
+  up ho (45/2) (shell_side/2) down
+  if 1
+  {
+    r (90 + 45/2)
+    for 8 { f shell_side r 45 }
+  }
+  else
+  {
+    orbit 0 0 180
+    orbit 0 0 180
+  }
+}
+
+def head()
+{
+  width = (shell_side / 3)
+  M 0 (width/2)
+  d 75
+  Q (width*.5) width 0
+  a width -180
+  Q 0 -(width/2) 105
+}
+
+def foreleg()
+{
+  width = (shell_side / 2)
+  M 0 (width/3)
+  d -15
+  Q (width * 1.5) (width * 1.5) 80
+  r 190
+  Q 0 -(width / 3) 170
+}
+
+def hindleg()
+{
+  width = (shell_side / 2)
+  M 0 (width/1.5)
+  r 15
+  f (width/5)
+  a 5 -105
+  f 4
+  a 5 -105
+  f (width/5)
+}
+
+def tail()
+{
+  width = (shell_side * .7 / 2)
+  M 0 width
+  r -40
+  ha 50 width
+  l 100
+  ha 50 width
+}
+
+def shell_line()
+{
+  up ho (45/2) (shell_side/4) down
+  ho (45/2) (shell_side/4)
+}
+
+def shell_lines()
+{
+  push
+  d (45/2) for 8 { stamp shell_line r 45 }
+  pop
+}
+
+def throw(body())
+{
+  push
+  up ao (45/2) (shell_side/2) down
+  stamp body
+  pop
+}
+
+def turtle_icon()
+{
+  stamp shell
+  stomp .5 shell
+
+  shell_lines
+
+  d 45 throw head
+  r 45 throw foreleg
+  r 90 # throw hindleg
+  r 45 # throw tail
+  r 45 # throw { flip hindleg }
+  r 90 throw { flip foreleg }
+}
+
+###################################################
+# Trail (matches turtle_icon positioning)
+###################################################
+
+def trail()
+{
+  a 75 -75
+  a 200 90
+  hop
+}
+
+def trail_icon()
+{
+  d (180+45)
+  throw trail
+}
+
+###################################################
+# Background
+###################################################
+
+def wave()
+{
+  a 20 -90
+  r 180
+  a 20 -90
+  hop
+}
+
+def waves()
+{
+  for 8 { stamp wave  j 40 }
+}
+
+###################################################
+# Fish
+###################################################
+
+def fish()
+{
+  d -90
+  f 20 d 45 f 20 
+  x = turtle.x
+  y = turtle.y
+  d -35 Q 100 0 45
+  r 90 
+  Q x -y -135
+  d 135
+  f 20
+  z
+
+  M 80 -5 stamp { circle 4 }
+}

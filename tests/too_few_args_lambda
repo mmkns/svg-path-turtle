@@ -1,0 +1,22 @@
+def wrapper(fn(a b))
+{
+  fn 3 4
+}
+
+def needs_fewer(a)
+{
+}
+
+wrapper needs_fewer
+
+def needs_too_many(a b c)
+{
+  M a b nl
+  M c c nl
+}
+
+wrapper needs_too_many
+
+## exit 1
+## stderr
+Line 18:9: Error: Function signature of 'needs_too_many' does not match parameter 1 ('fn(a b)') in call to wrapper()

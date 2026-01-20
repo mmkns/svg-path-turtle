@@ -1,0 +1,42 @@
+import 'library.svgt'
+
+def heart(width)
+{
+  radius = (width/4)
+  bottom = (width * .7)
+
+  # first hump
+  d -70
+  a radius 170
+
+  # save position, to mirror on left side
+  x = turtle.x
+  y = turtle.y
+
+  # down to the bottom of the heart
+  Q 0 bottom 150
+
+  r 60
+
+  # back up to saved point, mirrored across origin
+  Q -x y -100 
+
+  # second hump, returning to origin
+  a radius 170
+}
+
+def throw_heart(angle distance size)
+{
+  push
+    d angle
+    j distance
+    r 90
+
+    stamp { heart size }
+  pop
+}
+
+# main loop
+M 250 250
+for angle = 0..15..359
+  throw_heart angle 150 (5 + angle/7)

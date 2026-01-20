@@ -1,0 +1,89 @@
+def out(a b) { M a b z nl }
+
+out (1 == 1) 1
+out (1 == 2) 0
+out (1 != 1) 0
+out (1 != 2) 1
+out (1 < 1) 0
+out (1 < 2) 1
+out (1 > 1) 0
+out (1 > 2) 0
+out (1 < 0) 0
+out (1 > 0) 1
+out (1 <= 1) 1
+out (1 <= 2) 1
+out (1 <= 0) 0
+out (1 >= 2) 0
+out (1 >= 0) 1
+out (1 >= 1) 1
+out (1 == 1 ? 1 : 2) 1
+out (1 == 0 ? 1 : 2) 2
+out (1 && 1) 1
+out (1 && 0) 0
+out (0 && 0) 0
+out (1 || 1) 1
+out (1 || 0) 1
+out (0 || 0) 0
+
+out (-1 && 0) 0
+out (-1 && -1) -1
+out (-1 || 0) -1
+out (-1 || -1) -1
+
+out (3 && 4) 4
+out (7 && 4) 4
+out (7 || 4) 7
+out (0 || 4) 4
+out (-3 || 4) -3
+
+def testif(v)
+{
+    if v > 10
+	if v == 13
+	    out 13 13
+	else
+	    out 11 11
+    else
+	out 99 99
+}
+
+testif 13
+testif 14
+testif -1
+## stdout
+M 1 1 Z 
+M 0 0 Z 
+M 0 0 Z 
+M 1 1 Z 
+M 0 0 Z 
+M 1 1 Z 
+M 0 0 Z 
+M 0 0 Z 
+M 0 0 Z 
+M 1 1 Z 
+M 1 1 Z 
+M 1 1 Z 
+M 0 0 Z 
+M 0 0 Z 
+M 1 1 Z 
+M 1 1 Z 
+M 1 1 Z 
+M 2 2 Z 
+M 1 1 Z 
+M 0 0 Z 
+M 0 0 Z 
+M 1 1 Z 
+M 1 1 Z 
+M 0 0 Z 
+M 0 0 Z 
+M -1 -1 Z 
+M -1 -1 Z 
+M -1 -1 Z 
+M 4 4 Z 
+M 4 4 Z 
+M 7 7 Z 
+M 4 4 Z 
+M -3 -3 Z 
+M 13 13 Z 
+M 11 11 Z 
+M 99 99 Z 

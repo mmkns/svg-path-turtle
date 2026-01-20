@@ -1,0 +1,7 @@
+should_be_undefined = 7
+
+import "tests/lib_namespace_test"
+
+## exit 1
+## stderr
+tests/lib_namespace_test:3:5: Error: Undefined name: should_be_undefined

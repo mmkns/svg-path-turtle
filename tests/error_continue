@@ -1,0 +1,250 @@
+def wants_lambda(p1 p2 p3(a b)) { }
+
+# undefined name in arg for lamda param
+wants_lambda 1 2 p4
+
+M 10 10 z
+
+# wrong lambda sig
+def wrong_sig(a b c){}
+
+wants_lambda 1 2 wrong_sig
+
+# not a fnname
+
+wants_lambda 1 2 3
+
+# import in local context
+if 0
+{
+  import "library.svgt"
+
+  M 10 10 z
+}
+
+# empty import module name
+import ""
+
+# could not open import file
+import "no_such_file_exists"
+
+# undefined value name in expr
+M (3 + no_such_value) 4 z
+
+# invalid 'turtle' expressions
+M turtle 4 z
+M turtle.7 4 z
+M turtle.no_such_attr 4 z
+
+# invalid named for loop var
+for v = 8 { z }
+
+# name already defined
+if 1
+{
+  # in a value definition
+  x = 3
+  x = 4
+
+  # loop vars
+  for x = 5..6 # OK - x is local to the loop
+  {
+    x = 7      # NOT OK - is dup of loop var
+    M x x z
+  }
+
+  # fn name
+  def x() # already defined
+  {
+    # intentional error to prove that despite the function name being already
+    # defined, the body is still parsed.
+    y = 3
+    y = 4
+  }
+
+  # parameter name
+  def f1(a a a()) # 2 errors
+  {
+    y = 3
+    y = 4 # prove that fn f1 is being parsed properly
+  }
+}
+
+for x = 7..8
+{ =>(x y)     # lambda signature not allowed here
+}
+
+# Expected an expression (note: test needs rbrace as closer to cause this)
+
+if 1 { x = }
+if 1 { x = - }
+if 1 { x = ! }
+if 1 { x = (2 + ) }
+
+# missing fn args
+
+def foo(a b c()) { }
+
+if 1 { foo 1 }
+if 1 { foo 1 2 }
+
+# invalid statement (should skip to 'breakpoint' after rejecting '3' as a
+# function name)
+3 4 27 432 24 32
+unnoticed_error = 7
+random strange ! stuff
+
+# a keyword, so that synchronization will stop (without this, 'needs_value' is
+# skipped as part of the panic resync).
+breakpoint
+
+# Not a value
+needs_value = foo
+
+# undefined function name
+no_such_fn 1 2 3
+
+breakpoint # end panic mode
+
+# not a function name
+not_a_fn = 7
+not_a_fn 3    # fn call but not a fn
+
+breakpoint # end panic mode
+
+# numbers in fn sig
+wants_lambda 1 2 {=>(a b 3)
+  should_parse_in_here_too
+}
+
+def bar(a b 3)
+{
+  should_parse_in_here_too
+}
+
+def car(a b f(3.2))
+{
+  should_parse_in_here_too
+}
+
+def car(a b f(x y 3.2))
+{
+  should_parse_in_here_too
+}
+
+# broken statements
+
+if 1 { for }
+if 1 { for { undefined_name1 } }
+if 1 { for 1.. }
+if 1 { for 1.. { undefined_name2 } }
+if 1 { for .. { undefined_name3 } }
+if 1 { for ..3 { undefined_name4 } }
+if 1 { for ..3.. { undefined_name5 } }
+if 1 { for ..3..4 { undefined_name6 } }
+if 1 { if }
+if 1 { if else }
+if 1 { if else { undefined_name7 } }
+if 1 { if (3) }
+if 1 { if { undefined_name8 } else { undefined_name9 } }
+
+# recursively defined names
+
+if 1
+{
+  x = x
+
+  M x x
+
+  y = (3 + y)
+
+  M y y
+
+  M (x + y) 3
+
+  # Note: loopvar is *not* defined in the "1..loopvar" expression,
+  # because a loop variable is only defined *within* the body.
+  for loopvar = 1..loopvar { M loopvar loopvar }
+
+  def f(f)
+  {
+    f  # f is a param, not a command
+  }
+}
+
+M final_error_to_prove_that_compilation_continued 0
+## exit 1
+## stderr
+Line 4:18: Error: Undefined name: p4
+Line 4:18: Error: Expected a function name or anonymous function for parameter 3 ('p3(a b)') in call to wants_lambda()
+Line 11:18: Error: Function signature of 'wrong_sig' does not match parameter 3 ('p3(a b)') in call to wants_lambda()
+Line 15:18: Error: Expected a function name or anonymous function for parameter 3 ('p3(a b)') in call to wants_lambda()
+Line 20:3: Error: Import statements are only allowed at the global level
+Line 26:8: Error: Empty import module name
+Line 29:8: Error: Importing no_such_file_exists: No such file or directory
+Line 32:8: Error: Undefined name: no_such_value
+Line 35:10: Error: Expected turtle.x, turtle.y, or turtle.dir
+Line 36:12: Error: Expected turtle.x, turtle.y, or turtle.dir
+Line 37:23: Error: Expected turtle.x, turtle.y, or turtle.dir
+Line 40:9: Error: When naming a loop variable, the loop must use '..', as in 'for l = 1..8' (or '1..2..8')
+Line 47:3: Error: Name 'x' is already defined
+Line 52:5: Error: Name 'x' is already defined
+Line 57:7: Error: Name 'x' is already defined
+Line 62:5: Error: Name 'y' is already defined
+Line 66:12: Error: Name 'a' is already defined
+Line 66:14: Error: Name 'a' is already defined
+Line 69:5: Error: Name 'y' is already defined
+Line 74:3: Error: Lambda signature not allowed here
+Line 79:12: Error: Expected an expression
+Line 80:14: Error: Expected an expression
+Line 81:14: Error: Expected an expression
+Line 82:17: Error: Expected an expression
+Line 88:14: Error: Expected an expression
+Line 88:14: Error: Missing parameter 2 ('b') in call to foo()
+Line 89:16: Error: Expected an expression
+Line 89:16: Error: Expected a function name or anonymous function for parameter 3 ('c()') in call to foo()
+Line 93:1: Error: Unrecognized statement
+Line 102:15: Error: Name 'foo' is not a value
+Line 105:1: Error: Name 'no_such_fn' is undefined
+Line 111:10: Error: Name 'not_a_fn' is not a command or lambda function
+Line 116:26: Error: Expected an identifier or ')'
+Line 117:3: Error: Name 'should_parse_in_here_too' is undefined
+Line 120:13: Error: Expected an identifier or ')'
+Line 122:3: Error: Name 'should_parse_in_here_too' is undefined
+Line 125:15: Error: Expected an identifier or ')'
+Line 126:1: Error: Expected an identifier or ')'
+Line 127:3: Error: Name 'should_parse_in_here_too' is undefined
+Line 130:5: Error: Name 'car' is already defined
+Line 130:19: Error: Expected an identifier or ')'
+Line 131:1: Error: Expected an identifier or ')'
+Line 132:3: Error: Name 'should_parse_in_here_too' is undefined
+Line 137:12: Error: Expected an expression
+Line 138:12: Error: Expected an expression
+Line 138:14: Error: Name 'undefined_name1' is undefined
+Line 139:16: Error: Expected an expression
+Line 140:16: Error: Expected an expression
+Line 140:18: Error: Name 'undefined_name2' is undefined
+Line 141:12: Error: Expected an expression
+Line 141:15: Error: Expected an expression
+Line 141:17: Error: Name 'undefined_name3' is undefined
+Line 142:12: Error: Expected an expression
+Line 142:18: Error: Name 'undefined_name4' is undefined
+Line 143:12: Error: Expected an expression
+Line 143:18: Error: Expected an expression
+Line 143:20: Error: Name 'undefined_name5' is undefined
+Line 144:12: Error: Expected an expression
+Line 144:21: Error: Name 'undefined_name6' is undefined
+Line 145:11: Error: Expected an expression
+Line 146:11: Error: Expected an expression
+Line 146:16: Error: Unrecognized statement
+Line 147:11: Error: Expected an expression
+Line 147:18: Error: Name 'undefined_name7' is undefined
+Line 148:15: Error: Unrecognized statement
+Line 149:11: Error: Expected an expression
+Line 149:13: Error: Name 'undefined_name8' is undefined
+Line 149:38: Error: Name 'undefined_name9' is undefined
+Line 155:7: Error: Name 'x' is recursively defined
+Line 159:12: Error: Name 'y' is recursively defined
+Line 167:20: Error: Undefined name: loopvar
+Line 172:3: Error: Name 'f' is not a command or lambda function
+Line 175:3: Error: Undefined name: final_error_to_prove_that_compilation_continued

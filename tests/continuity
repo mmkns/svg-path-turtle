@@ -1,0 +1,44 @@
+# the "f 100" inside "push up ... pop" should have no effect - no m because we were
+# not drawing due to 'up'
+
+m 10 10 d 0
+
+f 100 r (90+45)
+
+push up f 100 pop
+
+f 100
+
+nl
+
+# should be only one additional M before the f 100
+M 10 100 d 0 j 10 j 10 f 100
+
+nl
+# no M for "down up" - the M should happen when the final f 100 occurs
+
+M 0 200 d 0 up f 10 down up down up down f 100
+
+nl
+
+# anti-continuity - pop after drawing
+M 0 300 d 0 f 100 push f 20 pop r 45 f 10
+nl
+
+# anti-continuity - pop back to a broken path
+M 0 400 d 0 f 100 j 100 push j 100 pop f 100
+nl
+
+# z with pen up (note: z changes the direction to 180
+# because to close the path it must travel back to the
+# starting point)
+M 0 450 d 0 f 100 up z down r 135 f 20
+nl
+
+## stdout
+M 10 10 L 110 10 L 39.29 80.71 
+M 30 100 L 130 100 
+M 10 200 L 110 200 
+M 0 300 L 100 300 L 120 300 M 100 300 L 107.07 307.07 
+M 0 400 L 100 400 M 200 400 L 300 400 
+M 0 450 L 100 450 M 0 450 L 14.14 435.86 

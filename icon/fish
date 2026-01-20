@@ -1,0 +1,6 @@
+import 'parts'
+
+M 30 51 d -25 stomp .5 fish
+M 132 136 d 15 stomp .4 fish
+M 230 193 d -20 stomp .6 fish
+M 210 253 d -15 stomp .7 fish

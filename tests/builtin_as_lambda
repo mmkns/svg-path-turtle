@@ -1,0 +1,11 @@
+def run_function(a b fn(a b))
+{
+  fn a b
+}
+
+run_function 100 100 M
+
+run_function 50 300 a
+
+## stdout
+M 100 100 A 50 50 0 1 1 56.7 125 

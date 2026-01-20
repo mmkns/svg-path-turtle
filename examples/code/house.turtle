@@ -1,0 +1,63 @@
+import 'library.svgt'
+
+# Rectangles of opposite winding - rect_r is used first, and defines
+# what will be filled.  rect_l then becomes the no-fill areas (windows
+# and door).
+def rect_r(w h) { push for 2 { f w r 90 f h r 90 } z pop }
+def rect_l(w h) { push r 90 for 2 { f h l 90 f w l 90 } z pop }
+
+def window()
+{
+  # frame
+  rect_l 50 50
+
+  # bars
+  push j 25 r 90 line 50 pop
+  push r 90 j 25 l 90 line 50 pop
+
+  z
+}
+
+def door()
+{
+  # frame
+  rect_l 70 130
+
+  # handle
+  j 55 r 90 j 65 stamp { circle 5 }
+}
+
+def house_frame()
+{
+  rect_r 300 300
+}
+
+# draws from top-left corner of house
+def roof()
+{
+  # Notes: uses hypotenuse command 'hb' to precisely draw angled lines
+
+  # eaves
+  push r 135 hb 20 20 z pop
+  push j 300 r 45 hb 20 20 z pop
+
+  # attic
+  r -45 hb 150 150 r 90 hb 150 150 z
+}
+
+M 100 200
+
+stamp house_frame
+stamp roof
+
+# First floor
+
+M 140 380 stamp window
+j 130 l 90 j 10 r 90
+stamp door
+
+# Second floor
+
+M 140 260 stamp window
+j 90 stamp window
+j 90 stamp window

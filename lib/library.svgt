@@ -1,0 +1,94 @@
+# Shape Definitions
+
+def new_matrix(body()) { push_matrix body pop_matrix }
+
+# Place a stretched drawing at the current location and rotation.
+# The scale can be different in x and y.
+def smear(scalex scaley body())
+{
+  push
+    new_matrix {
+      if (scalex != 1 || scaley != 1)
+	scaling scalex scaley
+      rotation turtle.dir
+      translation turtle.x turtle.y
+      
+      M 0 0
+      d 0
+
+      body
+    }
+  pop
+}
+
+# Place a 1:1 drawing at the current location and rotation.
+def stamp(body())
+{ 
+  # this is probably slightly faster than calling smear 1 1
+  push
+    new_matrix {
+      rotation turtle.dir
+      translation turtle.x turtle.y
+      
+      M 0 0
+      d 0
+
+      body
+    }
+  pop
+}
+
+# Place a resized drawing at the current location and rotation.
+def stomp(size body()) { smear size size body }
+
+def place(x y dir size body())
+{
+  push
+  M x y
+  d dir
+  stomp size body
+  pop
+}
+
+# Utilities
+
+# 'to' draws line to a position (relative)
+def to(dx dy) { aim dx dy  hb dx dy }
+
+# 'hop' starts a new path
+def hop() { j 0 }
+
+# line - a line on its own with proper linecaps
+def line(len) { hop f len push z pop }
+
+# Utility shapes (best used with `stamp` and such)
+
+def arrow() { line 25 push r 135 line 10 pop r -135 line 10 z }
+
+def circle(radius) { j radius r 90 for 2 { a radius 180 } z }
+
+def X() { r 45 for 4 { push f 10 pop r 90 } z }
+def O() { circle 10 }
+
+# Others
+
+def rotate(degrees body()) { new_matrix { rotation degrees body } }
+def scale(x y body()) { new_matrix { scaling x y body } }
+def shear(x y body()) { new_matrix { shearing x y body } }
+def reflect(x y body()) { new_matrix { reflection x y body } }
+def translate(x y body()) { new_matrix { translation x y body } }
+
+def mirror(body())
+{
+    reflect 0 1 body
+}
+
+def flip(body())
+{
+    reflect 1 0 body
+}
+
+
+def mark()   {} # reserved for future expansion
+def rewind() {} # reserved for future expansion
+def unfold() {} # reserved for future expansion

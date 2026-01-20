@@ -1,0 +1,148 @@
+def out(a b) { M a b z nl }
+
+if 1 # this makes all vars into locals, which have to be captured
+{
+  x = 1
+
+  def fn(n sum)
+  {
+    if n
+    {
+      fn (n-1) (sum+x+x)
+    }
+    else
+      out 777 sum
+  }
+
+  fn 10 0  # should emit out 777 20
+
+  def fact(n total)
+  {
+    if n == 1
+      out 222 total
+    else
+      fact (n-1) (n*total)
+  }
+
+  fact 7 1
+
+  # capture 3 levels up; recurse 2 levels up
+  c = 2
+
+  def outer(a b)
+  {
+    def middle(a b)
+    {
+      def inner(a b)
+      {
+	out a b
+	if a <= 1
+	  out 333 b
+	else
+	  outer (a-c) (b+c)
+      }
+
+      inner a b
+    }
+
+    middle a b
+  }
+
+  outer 10 1
+
+  # accessing a capture in a recursive outer closure
+  capture = 1764
+
+  def outer2(n)
+  {
+    def inner(a n)
+    {
+      if n
+	outer2 n
+      else
+	out 1764 a
+    }
+
+    inner capture (n-1)
+  }
+
+  outer2 3
+}
+
+if 1
+{
+  if 1  # capturing a lambda param (and a captured lambda param)
+  {
+    def outer(a f1(a b))
+    {
+      def middle(a)
+      {
+	f1 a a
+      }
+
+      middle a
+    }
+
+    def f1(a b)
+    {
+       out a b
+    }
+
+    outer 723 f1
+  }
+
+  if 1  # capturing a captured lambda param
+  {
+    def outer(a f1(a b))
+    {
+      def middle(a)
+      {
+	f1 a a
+
+	def inner(a)
+	{
+	   f1 a a
+	}
+
+	inner 725
+      }
+
+      middle a
+    }
+
+    def f1(a b)
+    {
+       out a b
+    }
+
+    outer 723 f1
+  }
+}
+
+if 1
+{
+  # Verifying lexical context validity
+
+  def fn(fn(fn))
+  {
+      fn 7
+  }
+
+  fn {=>(fn) f fn }
+}
+
+## stdout
+M 777 20 Z 
+M 222 5040 Z 
+M 10 1 Z 
+M 8 3 Z 
+M 6 5 Z 
+M 4 7 Z 
+M 2 9 Z 
+M 0 11 Z 
+M 333 11 Z 
+M 1764 1764 Z 
+M 723 723 Z 
+M 723 723 Z 
+M 725 725 Z 
+L 718.05 718.05 

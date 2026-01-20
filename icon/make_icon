@@ -1,0 +1,15 @@
+#!/bin/bash
+
+OPT="--decimal-places 6"
+
+make_path()
+{
+  ../svg_path_turtle $OPT $1 > path.$1
+}
+
+for i in background turtle trail fish
+do
+  make_path $i
+done
+
+python ../tools/svg_path_turtle_compositor icon.svg > out.svg

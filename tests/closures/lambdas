@@ -1,0 +1,162 @@
+def out(a b) { M a b z nl }
+
+if 1 # makes values into locals
+{
+  def wrap(ff())
+  {
+    out 777 777
+    ff
+    out 444 444
+  }
+
+  def fn(a b c())
+  {
+    out a b
+    c
+    out a b
+    wrap c
+  }
+
+  zz = 999
+
+  def fn2()
+  {
+    out 333 zz
+  }
+
+  fn 111 222 fn2
+
+  # lambdas with params and captures
+  def l3(a b ff(a b))
+  {
+    out a b
+    ff (a*2) (b*2)
+  }
+
+  capture = 663
+
+  def lambda(a b)
+  {
+    out a b
+    out capture (capture*2)
+  }  
+
+  def l2(a b ff(a b))
+  {
+    out a b
+    ff (a*2) (b*2)
+  }
+
+  l2 661 662 lambda
+  l3 661 662 lambda
+
+  # lambdas with lambda params
+  def lamb6(a b(a b))
+  {
+    out a a
+    b a (a*2)
+  }
+
+  def lamb3(a b(a b))
+  {
+    out a a
+    b a (a*2)
+    lamb6 (a*2) b
+  }
+
+  def lamb4(a b)
+  {
+    out a b
+  }
+
+  def fun5(a b ff(a b(a b)))
+  {
+    out a b
+    ff (a*2) lamb4
+  }
+
+  fun5 123 456 lamb3
+
+  # mismatched lambda (not enough params)
+  if 1
+  {
+    def lambda(a b)
+    {
+    }
+
+    def caller(a(b c d) e)
+    {
+    }
+
+    caller lambda 32
+  }
+
+  # mismatched lambda param (not enough params)
+  if 1
+  {
+    def lambda(a b)
+    {
+    }
+
+    def receiver(a(b c d) e)
+    {
+    }
+
+    def caller(a(b c) e)
+    {
+      receiver a e
+    }
+
+    caller lambda 32
+  }
+
+  # anonymous function
+  def wrapper(ff(a b))
+  {
+    out 1111 2222
+    ff 3333 4444
+    out 1111 2222
+  }
+
+  wrapper lamb4
+  wrapper { =>(a) out a a }
+
+  # anon function with local var and capture, called w extra args
+  def wrapper2(ff(a b))
+  {
+    out 0 0
+    ff 3333 4444
+    out 0 0
+  }
+
+  c = 888
+
+  wrapper2 { =>(a) b = c out a b }
+}
+## stdout
+M 111 222 Z 
+M 333 999 Z 
+M 111 222 Z 
+M 777 777 Z 
+M 333 999 Z 
+M 444 444 Z 
+M 661 662 Z 
+M 1322 1324 Z 
+M 663 1326 Z 
+M 661 662 Z 
+M 1322 1324 Z 
+M 663 1326 Z 
+M 123 456 Z 
+M 246 246 Z 
+M 246 492 Z 
+M 492 492 Z 
+M 492 984 Z 
+M 1111 2222 Z 
+M 3333 4444 Z 
+M 1111 2222 Z 
+M 1111 2222 Z 
+M 3333 3333 Z 
+M 1111 2222 Z 
+M 0 0 Z 
+M 3333 888 Z 
+M 0 0 Z 

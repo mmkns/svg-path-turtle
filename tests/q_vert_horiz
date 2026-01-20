@@ -1,0 +1,49 @@
+def do_q(departure turn)
+{
+  d departure
+  push
+  f 50
+  r turn
+  f 50
+  x=turtle.x
+  y=turtle.y
+  dir=turtle.dir
+  pop
+  push
+  Q x y dir
+  pop
+
+  nl
+}
+
+M 5 5 do_q 45  45 # vertical   arrival
+m 50 0 do_q 90 -45 # vertical   departure
+m 50 0 do_q 45 -45 # horizontal arrival
+m 50 0 do_q  0  45 # horizontal departure
+
+M 5  100 do_q   0  90 # horizontal departure, vertical   arrival
+m 75 0   do_q  90 -90 # vertical   departure, horizontal arrival
+m 75 50 do_q -90  90 # vertical   departure, horizontal arrival
+m 75 0   do_q   0 -90 # horizontal departure, vertical   arrival
+
+m 125 -50   do_q 180 -90 # horizontal departure, vertical   arrival
+
+# neither
+M 5  175 do_q  45  90
+m 75 75 do_q -45 -90 # same, but upward instead of downward
+m 75 0 do_q -15 -32
+m 75 0 do_q -15 32
+## stdout
+M 5 5 L 40.36 40.36 L 40.36 90.36 M 5 5 Q 40.36 40.36 40.36 90.36 
+M 55 5 L 55 55 L 90.36 90.36 M 55 5 Q 55 55 90.36 90.36 
+M 105 5 L 140.36 40.36 L 190.36 40.36 M 105 5 Q 140.36 40.36 190.36 40.36 
+M 155 5 L 205 5 L 240.36 40.36 M 155 5 Q 205 5 240.36 40.36 
+M 5 100 L 55 100 L 55 150 M 5 100 Q 55 100 55 150 
+M 80 100 L 80 150 L 130 150 M 80 100 Q 80 150 130 150 
+M 155 150 L 155 100 L 205 100 M 155 150 Q 155 100 205 100 
+M 230 150 L 280 150 L 280 100 M 230 150 Q 280 150 280 100 
+M 355 100 L 305 100 L 305 150 M 355 100 Q 305 100 305 150 
+M 5 175 L 40.36 210.36 L 5 245.71 M 5 175 Q 40.36 210.36 5 245.71 
+M 80 250 L 115.36 214.64 L 80 179.29 M 80 250 Q 115.36 214.64 80 179.29 
+M 155 250 L 203.3 237.06 L 237.4 200.49 M 155 250 Q 203.3 237.06 237.4 200.49 
+M 230 250 L 278.3 237.06 L 326.11 251.68 M 230 250 Q 278.3 237.06 326.11 251.68 

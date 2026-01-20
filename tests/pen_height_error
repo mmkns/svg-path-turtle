@@ -1,0 +1,12 @@
+
+up
+f 200
+down
+f 100 down
+
+f 200
+## cmdline --debug
+## stdout
+M 200 0 L 300 0 
+## stderr
+Line 5:7: Warning: Pen height became negative. Results may be incorrect.

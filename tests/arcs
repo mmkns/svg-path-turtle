@@ -1,0 +1,117 @@
+import 'library.svgt'
+
+def arc_demo(angle)
+{
+  push
+  f 10 
+  a 10 angle
+  pop
+}
+
+def arc_shape(angle)
+{
+  f 10
+  a 10 angle
+  hop
+}
+
+def jr()
+{
+  j 30
+}
+
+M 10 10 f 20 a 20 0
+
+M 10 30
+push
+arc_demo 90 jr
+arc_demo -90 jr
+arc_demo 270 jr
+arc_demo -270 jr
+arc_demo 55 jr
+arc_demo -55 jr
+arc_demo 293 jr
+arc_demo -293 jr
+pop
+
+m 0 30
+push
+stamp { arc_shape 90 } jr
+stamp { arc_shape -90 } jr
+stamp { arc_shape 270 } jr
+stamp { arc_shape -270 } jr
+stamp { arc_shape 55 } jr
+stamp { arc_shape -55 } jr
+stamp { arc_shape 293 } jr
+stamp { arc_shape -293 } jr
+pop
+
+m 30 30
+push
+stamp { mirror { arc_shape 90 } } jr
+stamp { mirror { arc_shape -90 } } jr
+stamp { mirror { arc_shape 270 } } jr
+stamp { mirror { arc_shape -270 } } jr
+stamp { mirror { arc_shape 55 } } jr
+stamp { mirror { arc_shape -55 } } jr
+stamp { mirror { arc_shape 293 } } jr
+stamp { mirror { arc_shape -293 } } jr
+pop
+
+m 0 30
+push
+stamp { flip { arc_shape 90 } } jr
+stamp { flip { arc_shape -90 } } jr
+stamp { flip { arc_shape 270 } } jr
+stamp { flip { arc_shape -270 } } jr
+stamp { flip { arc_shape 55 } } jr
+stamp { flip { arc_shape -55 } } jr
+stamp { flip { arc_shape 293 } } jr
+stamp { flip { arc_shape -293 } } jr
+pop
+
+m 0 30
+push
+stamp { mirror { arc_shape (90+360) } } jr
+stamp { mirror { arc_shape (-90-360) } } jr
+stamp { mirror { arc_shape (270+360) } } jr
+stamp { mirror { arc_shape (-270-360) } } jr
+stamp { mirror { arc_shape (55+360) } } jr
+stamp { mirror { arc_shape (-55-360) } } jr
+stamp { mirror { arc_shape (293+360) } } jr
+stamp { mirror { arc_shape (-293-360) } } jr
+pop
+
+m 0 30
+push
+stamp { flip { mirror { arc_shape (90+360) } } } jr
+stamp { flip { mirror { arc_shape (-90-360) } } } jr
+stamp { flip { mirror { arc_shape (270+360) } } } jr
+stamp { flip { mirror { arc_shape (-270-360) } } } jr
+stamp { flip { mirror { arc_shape (55+360) } } } jr
+stamp { flip { mirror { arc_shape (-55-360) } } } jr
+stamp { flip { mirror { arc_shape (293+360) } } } jr
+stamp { flip { mirror { arc_shape (-293-360) } } } jr
+pop
+
+def rings()
+{
+  push j 15 orbit 0 0 130 pop
+  push j 20 orbit 0 0 -130 pop
+  z
+}
+
+m 0 50
+stamp rings
+j 50 stamp { mirror rings }
+j 30 stamp { flip rings }
+j 50 stamp { mirror { flip rings } }
+j 50 push d 35 stamp { mirror { flip rings } } pop
+j 50 push d -400 stamp { mirror rings } pop
+# proof that reflection returns to normal
+j 50 stamp rings
+j 50 push stamp { mirror rings } pop
+j 50 push stamp { flip rings } pop
+
+## stdout
+M 10 10 L 30 10 M 10 30 L 20 30 A 10 10 0 0 1 30 40 M 40 30 L 50 30 A 10 10 0 0 0 60 20 M 70 30 L 80 30 A 10 10 0 1 1 70 40 M 100 30 L 110 30 A 10 10 0 1 0 100 20 M 130 30 L 140 30 A 10 10 0 0 1 148.19 34.26 M 160 30 L 170 30 A 10 10 0 0 0 178.19 25.74 M 190 30 L 200 30 A 10 10 0 1 1 190.79 36.09 M 220 30 L 230 30 A 10 10 0 1 0 220.79 23.91 M 10 60 L 20 60 A 10 10 0 0 1 30 70 M 40 60 L 50 60 A 10 10 0 0 0 60 50 M 70 60 L 80 60 A 10 10 0 1 1 70 70 M 100 60 L 110 60 A 10 10 0 1 0 100 50 M 130 60 L 140 60 A 10 10 0 0 1 148.19 64.26 M 160 60 L 170 60 A 10 10 0 0 0 178.19 55.74 M 190 60 L 200 60 A 10 10 0 1 1 190.79 66.09 M 220 60 L 230 60 A 10 10 0 1 0 220.79 53.91 M 40 90 L 30 90 A 10 10 0 0 0 20 100 M 70 90 L 60 90 A 10 10 0 0 1 50 80 M 100 90 L 90 90 A 10 10 0 1 0 100 100 M 130 90 L 120 90 A 10 10 0 1 1 130 80 M 160 90 L 150 90 A 10 10 0 0 0 141.81 94.26 M 190 90 L 180 90 A 10 10 0 0 1 171.81 85.74 M 220 90 L 210 90 A 10 10 0 1 0 219.21 96.09 M 250 90 L 240 90 A 10 10 0 1 1 249.21 83.91 M 40 120 L 50 120 A 10 10 0 0 0 60 110 M 70 120 L 80 120 A 10 10 0 0 1 90 130 M 100 120 L 110 120 A 10 10 0 1 0 100 110 M 130 120 L 140 120 A 10 10 0 1 1 130 130 M 160 120 L 170 120 A 10 10 0 0 0 178.19 115.74 M 190 120 L 200 120 A 10 10 0 0 1 208.19 124.26 M 220 120 L 230 120 A 10 10 0 1 0 220.79 113.91 M 250 120 L 260 120 A 10 10 0 1 1 250.79 126.09 M 40 150 L 30 150 A 10 10 0 0 0 20 160 M 70 150 L 60 150 A 10 10 0 0 1 50 140 M 100 150 L 90 150 A 10 10 0 1 0 100 160 M 130 150 L 120 150 A 10 10 0 1 1 130 140 M 160 150 L 150 150 A 10 10 0 0 0 141.81 154.26 M 190 150 L 180 150 A 10 10 0 0 1 171.81 145.74 M 220 150 L 210 150 A 10 10 0 1 0 219.21 156.09 M 250 150 L 240 150 A 10 10 0 1 1 249.21 143.91 M 40 180 L 30 180 A 10 10 0 0 1 20 170 M 70 180 L 60 180 A 10 10 0 0 0 50 190 M 100 180 L 90 180 A 10 10 0 1 1 100 170 M 130 180 L 120 180 A 10 10 0 1 0 130 190 M 160 180 L 150 180 A 10 10 0 0 1 141.81 175.74 M 190 180 L 180 180 A 10 10 0 0 0 171.81 184.26 M 220 180 L 210 180 A 10 10 0 1 1 219.21 173.91 M 250 180 L 240 180 A 10 10 0 1 0 249.21 186.09 M 55 230 A 15 15 0 0 1 30.36 241.49 M 60 230 A 20 20 0 0 0 27.14 214.68 M 40 230 Z M 75 230 A 15 15 0 0 0 99.64 241.49 M 70 230 A 20 20 0 0 1 102.86 214.68 M 90 230 Z M 135 230 A 15 15 0 0 0 110.36 218.51 M 140 230 A 20 20 0 0 1 107.14 245.32 M 120 230 Z M 155 230 A 15 15 0 0 1 179.64 218.51 M 150 230 A 20 20 0 0 0 182.86 245.32 M 170 230 Z M 207.71 221.4 A 15 15 0 0 1 234.49 226.12 M 203.62 218.53 A 20 20 0 0 0 221.74 249.92 M 220 230 Z M 258.51 239.64 A 15 15 0 0 0 284.77 232.6 M 254.68 242.86 A 20 20 0 0 1 270 210 M 270 230 Z M 335 230 A 15 15 0 0 1 310.36 241.49 M 340 230 A 20 20 0 0 0 307.14 214.68 M 320 230 Z M 355 230 A 15 15 0 0 0 379.64 241.49 M 350 230 A 20 20 0 0 1 382.86 214.68 M 370 230 Z M 435 230 A 15 15 0 0 0 410.36 218.51 M 440 230 A 20 20 0 0 1 407.14 245.32 M 420 230 Z 

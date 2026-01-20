@@ -1,0 +1,4 @@
+import 'parts'
+
+r -70
+stomp 1.1 trail_icon

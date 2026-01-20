@@ -1,0 +1,35 @@
+trunk = 40
+branch = (trunk/3)
+
+def show(body())
+{
+  push body pop 
+  d 90
+  j trunk
+  d 0
+}
+
+def to(dx dy) { aim dx dy hb dx dy }
+
+def group(dx dy)
+{
+  show { f trunk to dx dy }
+  show { f trunk to dx 0 }
+  show { f trunk to dx -dy }
+
+  show { f trunk to 0 dy }
+  show { f trunk to 0 -dy }
+
+  show { f trunk to -dx dy }
+  show { f trunk to -dx 0 }
+  show { f trunk to -dx -dy }
+}
+
+M trunk trunk group branch branch
+
+M (trunk*3) trunk group branch (branch*.3)
+
+M (trunk*5) trunk group (branch*.2) branch
+
+## stdout
+M 40 40 L 80 40 L 93.33 53.33 M 40 80 L 80 80 L 93.33 80 M 40 120 L 80 120 L 93.33 106.67 M 40 160 L 80 160 L 80 173.33 M 40 200 L 80 200 L 80 186.67 M 40 240 L 80 240 L 66.67 253.33 M 40 280 L 80 280 L 66.67 280 M 40 320 L 80 320 L 66.67 306.67 M 120 40 L 160 40 L 173.33 44 M 120 80 L 160 80 L 173.33 80 M 120 120 L 160 120 L 173.33 116 M 120 160 L 160 160 L 160 164 M 120 200 L 160 200 L 160 196 M 120 240 L 160 240 L 146.67 244 M 120 280 L 160 280 L 146.67 280 M 120 320 L 160 320 L 146.67 316 M 200 40 L 240 40 L 242.67 53.33 M 200 80 L 240 80 L 242.67 80 M 200 120 L 240 120 L 242.67 106.67 M 200 160 L 240 160 L 240 173.33 M 200 200 L 240 200 L 240 186.67 M 200 240 L 240 240 L 237.33 253.33 M 200 280 L 240 280 L 237.33 280 M 200 320 L 240 320 L 237.33 306.67 
