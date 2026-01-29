@@ -61,7 +61,7 @@ SvgPathTurtle (version 0.7 alpha)
 
 > Note: Requires `make` (gnu make), `cmake`, and `g++`
 
-1. Clone the repo.
+1. Clone the repo (or click on `Tag` in github and download zip or tar.gz).
 1. `cd` into the repo directory.
 1. Run `make`
 1. To test: run `tools/run_tests`
@@ -79,20 +79,16 @@ Next up: Try the [Tutorials](#tutorials)!
 
 ### Windows Instructions (experimental)
 
-No promises, but I've tried it with Visual Studio and it seems to work.
+First, build with Visual Studio.  Here's the steps if you're unfamiliar:
 
-<details><summary>1. Build with Visual Studio (click for steps)</summary>
-
-- Clone the repo to a local dir
+- Clone the repo to a local dir (or click on `Tag` in github and download zip or tar.gz).
 - Install `Visual Studio 2026` (Community is fine)
     * Or any Visual Studio with cmake version 4.0 or greater
 - Launch VS, click to open a local folder, and then select the git repo folder.
    * VS will automatically run cmake once it's fully started.
    * Wait for cmake to complete (a few seconds)
 - Menu: `Build > Build All`
-    * You will see lots of warnings due to `/Wall`, but they should all be fine.
-
-</details>
+   * Note: you will see lots of warnings due to `/Wall`, but they should all be fine.
 
 To run the tests:
 
@@ -579,9 +575,15 @@ for 10 { ... }
 
 for v = 1..10 { f v }
   # name the loop variable
+  # note: the name is only available inside the body
 
 ```
 
+> [!NOTE]
+> Functions cannot return values in SvgPathTurtle.  This is intentional.
+> "The turtle way" is geometry, not math.
+>
+> Anyway, I thought it would be fun to see what kind of language that results in.
 
 ## Lambda Functions
 
