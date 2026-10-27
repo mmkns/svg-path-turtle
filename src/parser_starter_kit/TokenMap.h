@@ -130,7 +130,7 @@ public:
 	    return info->description;
 
 	if(isprint(token))
-	    return { 1, static_cast<char>(token) };
+	    return std::string((size_t)1, static_cast<char>(token));
 
 	return "INTERNAL_ERROR_MISSING_TOKEN_DESCRIPTION";
     }

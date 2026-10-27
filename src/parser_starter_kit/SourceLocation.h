@@ -35,6 +35,8 @@ struct Location
     {
 	return linenum != 0;
     }
+
+    bool operator==(const Location &) const = default;
 };
 
 struct TokenSpan

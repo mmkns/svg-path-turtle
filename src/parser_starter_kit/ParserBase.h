@@ -205,7 +205,7 @@ protected:
 	consume();
     }
 
-    bool is(int tok)
+    bool is(int tok) const
     {
 	return token() == tok;
     }
@@ -313,15 +313,16 @@ protected:
     {
 	friend class ParserBase;
 
-	ParserBase &m_parser;
+	ParserBase *m_parser;
 
 	Location m_location;
 
     private:
 	ErrorReporter(ParserBase &parser, Location loc)
-	    : m_parser(parser)
+	    : m_parser(&parser)
 	    , m_location(loc)
 	{
+	    assert(m_parser);
 	}
 
 	void report_error(Errtype type, auto&&...args)
@@ -330,7 +331,7 @@ protected:
 
 	    ((s << std::forward<decltype(args)>(args)), ...);
 
-	    m_parser.report_error(type, m_location, s.str());
+	    m_parser->report_error(type, m_location, s.str());
 	}
 
     public:
@@ -617,9 +618,10 @@ protected:
 	// IMPLEMENT: This function handles postfix unary, binary, and ternary
 	// (and more?) expressions.  It is called when the operator is in the
 	// postfix position, and is the current token.  It should switch on
-	// that token, and consume it, and then (if it's binary or ternary) call
-	// parse_expression(op_postfix_precedence) to parse the right hand side
-	// if there is one.  For ternary, it will of course have to call
+	// that token, and then (if it's binary or ternary) call
+	// parse_expression(postfix_precedence) [which is the precedence of
+	// op_token - the outer op] to parse the right hand side
+	// if one can be found.  For ternary, it will of course have to call
 	// parse_expression() again, for the third op.
 
 	return {};
